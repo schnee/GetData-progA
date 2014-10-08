@@ -30,7 +30,7 @@ subjects = rbind(subjectTrain, subjectTest)
 activityTrain = fread(file.path(dataDir, "train", "Y_train.txt"))
 activityTest  = fread(file.path(dataDir, "test" , "Y_test.txt" ))
 ## merge them
-activityLabels = rbind(activityTrain, activityTest)
+activityCodes = rbind(activityTrain, activityTest)
 
 #meh fread is not happy with the X_train.txt files, so use read.table
 dataTrain = data.table(read.table(file.path(dataDir, "train", "X_train.txt")))
@@ -44,10 +44,10 @@ activityData = rbind(dataTrain, dataTest)
 
 # add some nice labels
 setnames(subjects,"V1", "subjectNumber")
-setnames(activityLabels, "V1", "activityNumber")
+setnames(activityCodes, "V1", "activityNumber")
 
 # and one more binding
-activityData = cbind(subjects, activityLabels, activityData)
+activityData = cbind(subjects, activityCodes, activityData)
 
 # now we'll want to extract the measures of interest. These are identified by
 # feature names containing "mean" and "std" (for standard deviation)
