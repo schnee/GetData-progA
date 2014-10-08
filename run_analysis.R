@@ -1,6 +1,7 @@
 # Analysis for Coursera Getting and Cleaning Data Programming Assignment
 #
 require(data.table)
+require(dplyr)
 require(tidyr)
 
 # check to see if the zip file exists
@@ -47,3 +48,24 @@ setnames(activityLabels, "V1", "activityNumber")
 
 # and one more binding
 activityData = cbind(subjects, activityLabels, activityData)
+
+# now we'll want to extract the measures of interest. These are identified by
+# feature names containing "mean" and "std" (for standard deviation)
+
+features = fread(file.path(dataDir, "features.txt"))
+setnames(features, names(features), c("featureNumber", "featureName"))
+
+features = features %>% filter(grepl(".*-std.*|.*-mean.*", featureName))
+
+features$featureCode = features[, paste0("V", featureNumber)]
+
+keeps = c("subjectNumber", "activityNumber", features$featureCode)
+
+# not sure why I have to do this, but the subset won't work otherwise...
+# (something with data.table that I'm not familiar with)
+setkey(activityData, subjectNumber, activityNumber)
+
+activityData = activityData[,keeps, with=FALSE]
+
+setnames(activityData, names(activityData), c("subjectNumber", "activityNumber", features$featureName))
+
