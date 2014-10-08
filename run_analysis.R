@@ -80,6 +80,7 @@ setnames(activityData, names(activityData),
 
 activityData = merge(activityData, activityLabels, by="activityNumber")
 
+
 # when I merged, my last column is now the Activity Label I want to only 
 # calculate stats on the features, so I need to index into 'gather' nicely
 lastDataColumn = ncol(activityData)-1
